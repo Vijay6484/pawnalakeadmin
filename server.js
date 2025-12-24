@@ -66,11 +66,36 @@ app.use(async (req, res, next) => {
     req.db = conn;
     next();
   } catch (err) {
-    console.error('DB Connection Error:', err);
+    console.error('DB Connection Error:', err.message);
+    
+    // Provide more specific error information
+    let errorMessage = 'Database connection failed';
+    let errorDetails = {};
+    
+    if (err.code === 'ER_ACCESS_DENIED_ERROR') {
+      errorMessage = 'Database authentication failed';
+      errorDetails = {
+        hint: 'Check your database credentials and IP whitelist settings',
+        user: err.sqlMessage?.match(/user '([^']+)'/)?.[1] || 'unknown'
+      };
+    } else if (err.code === 'ECONNREFUSED') {
+      errorMessage = 'Database server unreachable';
+      errorDetails = {
+        hint: 'Check if database server is running and network connectivity'
+      };
+    } else if (err.code === 'ETIMEDOUT') {
+      errorMessage = 'Database connection timeout';
+      errorDetails = {
+        hint: 'Database server is not responding'
+      };
+    }
+    
     if (conn) await conn.release().catch(e => console.error('Release error:', e));
+    
     res.status(503).json({ 
       error: 'Service unavailable',
-      message: 'Database connection failed'
+      message: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? errorDetails : undefined
     });
   }
 });
