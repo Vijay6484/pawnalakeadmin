@@ -114,6 +114,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Pawna Lake Camp API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      admin: '/admin/*'
+    }
+  });
+});
+
 // Health check endpoints
 app.get('/health', async (req, res) => {
   try {
