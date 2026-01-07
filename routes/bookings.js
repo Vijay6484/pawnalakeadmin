@@ -181,6 +181,8 @@ router.post("/", async (req, res) => {
 
       advance_amount = 0,
       coupon_code,
+      discount,
+      full_amount,
       RatePersonVilla,
       ExtraPersonVilla,
       type,
@@ -217,7 +219,10 @@ router.post("/", async (req, res) => {
 
     const totalFood = food_veg + food_nonveg + food_jain;
 
-    if (totalFood !== totalGuests) {
+    // Food validation - skip for villas (type === 'villa') or if food counts are 0 (villa bookings)
+    // This matches backend copy pattern where food validation is commented out
+    const isVilla = req.body.type === 'villa';
+    if (!isVilla && totalFood !== totalGuests && totalFood > 0) {
       return res
         .status(400)
         .json({
@@ -276,10 +281,10 @@ router.post("/", async (req, res) => {
     advance_amount,
     payment_status,
     payment_txn_id,
-    // Add the new values here (make sure to extract them from req.body first)
-    req.body.coupon || null,        
-    req.body.discount || 0,
-    req.body.full_amount || null,
+    // Coupon and discount fields (matching AccommodationBookingPage pattern)
+    coupon_code || null,        
+    discount || 0,
+    full_amount || null,
     new Date(),
   ]
 );
