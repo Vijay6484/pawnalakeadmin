@@ -117,13 +117,6 @@ router.post('/', async (req, res) => {
       });
     }
 
-    if (
-      coupon.accommodationType.toLowerCase() !== 'all' &&
-      coupon.accommodationType.trim().toLowerCase() !== propertyName.toLowerCase()
-    ) {
-      return res.status(400).json({ success: false, message: "This coupon is not valid for the selected property." });
-    }
-
     // Validate expiry date
     if (new Date(expiryDate) <= new Date()) {
       return res.status(400).json({

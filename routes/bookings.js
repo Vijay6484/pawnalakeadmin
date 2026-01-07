@@ -1802,9 +1802,7 @@ async function sendPdfEmail(params) {
 
                                         style="color:#000000; font-family:Lato, Arial,sans-serif; font-size:15px; line-height:22px; padding-bottom:8px;width:50%;">
 
-                                        <div mc:edit="text_3"><b>The amount payable to <span>Plumeria Retreat Pawna lake
-
-                                              AC cottage </span> for this booking
+                                        <div mc:edit="text_3"><b>The amount payable to <span>Camp at Pawna</span> for this booking
 
                                             is <span>INR ${advancePayable}</span> as per the details below. Please email us at
 
@@ -2027,9 +2025,7 @@ async function sendPdfEmail(params) {
 
                                           stage,
 
-                                          you will be notified and this confirmation email & Plumeria Retreat Pawna lake
-
-                                          AC cottage Booking ID will be null and void.</div>
+                                          you will be notified and this confirmation email & Camp at Pawna Booking ID will be null and void.</div>
 
                                       </td>
 
@@ -2217,9 +2213,7 @@ async function sendPdfEmail(params) {
 
                                           email account that is not monitored. To ensure that you receive
 
-                                          communication related to your booking from Plumeria Retreat Pawna lake AC
-
-                                          cottage , please add <a href="mailto:booking@plumeriaretreat.com"
+                                          communication related to your booking from Camp at Pawna, please add <a href="mailto:booking@plumeriaretreat.com"
 
                                             style="color: #164e6f;"><b>booking@plumeriaretreat.com </b></a> to your contact list
 
@@ -2936,9 +2930,7 @@ async function sendPdfEmail(params) {
 
                                         style="color:#000000; font-family:Lato, Arial,sans-serif; font-size:15px; line-height:22px; padding-bottom:8px;width:50%;">
 
-                                        <div mc:edit="text_3"><b>The amount payable to <span>Plumeria Retreat Pawna lake
-
-                                              AC cottage </span> for this booking
+                                        <div mc:edit="text_3"><b>The amount payable to <span>Camp at Pawna</span> for this booking
 
                                             is <span>INR ${advancePayable}</span> as per the details below. Please email us at
 
@@ -3150,9 +3142,7 @@ async function sendPdfEmail(params) {
 
                                           stage,
 
-                                          you will be notified and this confirmation email & Plumeria Retreat Pawna lake
-
-                                          AC cottage Booking ID will be null and void.</div>
+                                          you will be notified and this confirmation email & Camp at Pawna Booking ID will be null and void.</div>
 
                                       </td>
 
@@ -3340,9 +3330,7 @@ async function sendPdfEmail(params) {
 
                                           email account that is not monitored. To ensure that you receive
 
-                                          communication related to your booking from Plumeria Retreat Pawna lake AC
-
-                                          cottage , please add <a href="mailto:booking@plumeriaretreat.com"
+                                          communication related to your booking from Camp at Pawna, please add <a href="mailto:booking@plumeriaretreat.com"
 
                                             style="color: #164e6f;"><b>booking@plumeriaretreat.com </b></a> to your contact list
 

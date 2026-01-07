@@ -25,13 +25,12 @@ app.use(morgan('dev')); // Log to console in development
 app.use(cors({
   origin: [
     'http://localhost:5173', 
-    'https://adminplumeria.vercel.app',
-    'https://www.plumeriaretreat.com',
-    'https://admin.plumeriaretreat.com',
-    'https://www.admin.plumeriaretreat.com',
-    'https://plumeriaretreat.vercel.app',
-    'http://localhost:5174',
-    'https://plumeriaretreat.com'
+     'https://admin.campatpawna.com',
+     'https://www.campatpawna.com',
+     'https://www.admin.campatpawna.com',
+     'https://campatpawna.com',
+     'http://localhost:5174',
+     'https://campatpawna.com'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

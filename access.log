@@ -1108,3 +1108,6 @@
 ::1 - - [03/Jan/2026:13:47:23 +0000] "GET / HTTP/1.1" 404 111 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
 ::1 - - [03/Jan/2026:13:47:23 +0000] "GET /favicon.ico HTTP/1.1" 404 122 "http://localhost:5001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
 ::1 - - [03/Jan/2026:13:47:32 +0000] "GET /admin/bookings HTTP/1.1" 200 9304 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+::1 - - [03/Jan/2026:14:35:41 +0000] "GET / HTTP/1.1" 200 122 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+::1 - - [03/Jan/2026:14:35:54 +0000] "GET /admin/bookings HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+::1 - - [03/Jan/2026:14:36:01 +0000] "GET /admin HTTP/1.1" 404 116 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
