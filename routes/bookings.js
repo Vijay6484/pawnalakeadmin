@@ -1813,7 +1813,7 @@ async function sendPdfEmail(params) {
 
                                             <a href="mailto: ${ownerEmail}"
 
-                                              style="color: #216896;">booking@plumeriaretreat.com</a> if there is any
+                                              style="color: #216896;">bookings@campatpawna.com</a> if there is any
 
                                             discrepancy in this payment
 
@@ -2162,7 +2162,7 @@ async function sendPdfEmail(params) {
 
                                                     href="mailto:${ownerEmail}"
 
-                                                    style="color: #164e6f;"><b>booking@plumeriaretreat.com</b></a></span>
+                                                    style="color: #164e6f;"><b>bookings@campatpawna.com</b></a></span>
 
                                               </div>
 
@@ -2218,9 +2218,9 @@ async function sendPdfEmail(params) {
 
                                           email account that is not monitored. To ensure that you receive
 
-                                          communication related to your booking from Camp at Pawna, please add <a href="mailto:booking@plumeriaretreat.com"
+                                          communication related to your booking from Camp at Pawna, please add <a href="mailto:bookings@campatpawna.com"
 
-                                            style="color: #164e6f;"><b>booking@plumeriaretreat.com </b></a> to your contact list
+                                            style="color: #164e6f;"><b>bookings@campatpawna.com </b></a> to your contact list
 
                                           and
 
@@ -2941,7 +2941,7 @@ async function sendPdfEmail(params) {
 
                                             <a href="mailto: ${ownerEmail}"
 
-                                              style="color: #216896;">booking@plumeriaretreat.com</a> if there is any
+                                              style="color: #216896;">bookings@campatpawna.com</a> if there is any
 
                                             discrepancy in this payment
 
@@ -3279,7 +3279,7 @@ async function sendPdfEmail(params) {
 
                                                     href="mailto:${ownerEmail}"
 
-                                                    style="color: #164e6f;"><b>booking@plumeriaretreat.com</b></a></span>
+                                                    style="color: #164e6f;"><b>bookings@campatpawna.com</b></a></span>
 
                                               </div>
 
@@ -3335,9 +3335,9 @@ async function sendPdfEmail(params) {
 
                                           email account that is not monitored. To ensure that you receive
 
-                                          communication related to your booking from Camp at Pawna, please add <a href="mailto:booking@plumeriaretreat.com"
+                                          communication related to your booking from Camp at Pawna, please add <a href="mailto:bookings@campatpawna.com"
 
-                                            style="color: #164e6f;"><b>booking@plumeriaretreat.com </b></a> to your contact list
+                                            style="color: #164e6f;"><b>bookings@campatpawna.com </b></a> to your contact list
 
                                           and
 
