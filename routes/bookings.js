@@ -3447,7 +3447,7 @@ async function sendPdfEmail(params) {
   // ... (rest of the HTML template remains the same) ...
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.hostinger.com",
+    host: "mail.campatpawna.com",
 
     secure: false,
 
@@ -3464,7 +3464,7 @@ async function sendPdfEmail(params) {
     from:process.env.EMAIL_USER,
     to: email.trim(),
 	cc: ownerEmail,
-	bcc: "admin@plumeriaretreat.com",
+	bcc: "admin@campatpawna.com",
     subject: "Resort Camping Booking",
 
     html: html, // Make sure HTML variable is defined
@@ -3473,7 +3473,7 @@ async function sendPdfEmail(params) {
     from:process.env.EMAIL_USER,
     to: email.trim(),
 	cc: ownerEmail,
-	bcc: "admin@plumeriaretreat.com",
+	bcc: "admin@campatpawna.com",
     subject: "Resort Camping Booking",
 
     html: html_villa, // Make sure HTML variable is defined
