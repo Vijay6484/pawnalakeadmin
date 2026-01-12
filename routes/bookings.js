@@ -3447,11 +3447,11 @@ async function sendPdfEmail(params) {
   // ... (rest of the HTML template remains the same) ...
 
   const transporter = nodemailer.createTransport({
-    host: "mail.roundcube.com",
+    host: "mail.campatpawna.com",
 
     secure: false,
 
-    port: 587,
+    port: 465,
 
     auth: {
       user: process.env.EMAIL_USER ,
