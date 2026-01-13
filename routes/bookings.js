@@ -3447,11 +3447,11 @@ async function sendPdfEmail(params) {
   // ... (rest of the HTML template remains the same) ...
 
   const transporter = nodemailer.createTransport({
-    host: "mail.campatpawna.com",
+    host: "mail.hostinger.com",
 
     secure: false,
 
-    port: 465,
+    port: 587,
 
     auth: {
       user: process.env.EMAIL_USER ,
