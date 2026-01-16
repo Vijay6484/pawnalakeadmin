@@ -69,7 +69,7 @@ adminUsersRouter.get('/:id', async (req, res) => {
 // POST /admin/users - Create new user
 adminUsersRouter.post('/', async (req, res) => {
   try {
-    const { name, email, role, status, avatar, password } = req.body;
+    const { name, email, phoneNumber, role, status, avatar, password } = req.body;
     
     // Validate required fields
     if (!name || !email || !role || !status || !password) {
@@ -115,8 +115,8 @@ adminUsersRouter.post('/', async (req, res) => {
     
     // Insert new user
     const [result] = await pool.execute(
-      'INSERT INTO users (name, email, role, status, avatar, password) VALUES (?, ?, ?, ?, ?, ?)',
-      [name, email, role, status, 'https://example.com/avatars/charlie-davis.jpg' || null, hashedPassword]
+      'INSERT INTO users (name, email, phoneNumber, role, status, avatar, password) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, email, phoneNumber || '', role, status, avatar || 'https://example.com/avatars/charlie-davis.jpg', hashedPassword]
     );
     
     // Fetch the created user (without password)
@@ -153,7 +153,7 @@ adminUsersRouter.post('/', async (req, res) => {
 adminUsersRouter.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role, status, avatar, password } = req.body;
+    const { name, email, phoneNumber, role, status, avatar, password } = req.body;
     
     // Check if user exists
     const [existingUsers] = await pool.execute(
@@ -213,6 +213,11 @@ adminUsersRouter.put('/:id', async (req, res) => {
     if (email) {
       updateFields.push('email = ?');
       updateValues.push(email);
+    }
+    
+    if (phoneNumber !== undefined) {
+      updateFields.push('phoneNumber = ?');
+      updateValues.push(phoneNumber || '');
     }
     
     if (role) {
