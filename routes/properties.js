@@ -70,7 +70,8 @@ routes.get('/accommodations', async (req, res) => {
                 created_at,
                 updated_at,
                 MaxPersonVilla,
-                RatePerPerson
+                RatePerPerson,
+                website
             FROM accommodations
         `;
 
@@ -178,6 +179,7 @@ routes.get('/accommodations', async (req, res) => {
             amenities: processJsonField(row.amenity_ids, []),
             max_person_villa: row.MaxPersonVilla,
             rate_per_person: row.RatePerPerson,
+            website: row.website,
             location: {
                 address: row.address,
                 coordinates: {
@@ -292,7 +294,8 @@ routes.get('/accommodations/:id', async (req, res) => {
                 features: parseJSONField(accommodation.features, []),
                 images: parseJSONField(accommodation.images, []),
                 MaxPersonVilla: accommodation.MaxPersonVilla || 0,
-                RatePersonVilla: accommodation.RatePerPerson || 0
+                RatePersonVilla: accommodation.RatePerPerson || 0,
+                website: accommodation.website || ''
             },
             location: {
                 owner: {
@@ -375,7 +378,7 @@ routes.post('/accommodations', async (req, res) => {
         } = req.body;
 
         // Validate required fields
-        if (!basicInfo || !basicInfo.name || !basicInfo.type || 
+        if (!basicInfo || !basicInfo.name || !basicInfo.type ||
             !basicInfo.capacity || !basicInfo.rooms || !basicInfo.price) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
@@ -383,18 +386,19 @@ routes.post('/accommodations', async (req, res) => {
         const connection = await createConnection();
 
         // Extract values from nested structure
-        const { 
-            name, 
-            description, 
-            type, 
-            capacity, 
-            rooms, 
-            price, 
-            features = [], 
-            images = [], 
+        const {
+            name,
+            description,
+            type,
+            capacity,
+            rooms,
+            price,
+            features = [],
+            images = [],
             available = true,
             MaxPersonVilla,
-            RatePersonVilla
+            RatePersonVilla,
+            website
         } = basicInfo;
 
         const address = location?.address || null;
@@ -415,8 +419,8 @@ routes.post('/accommodations', async (req, res) => {
             `INSERT INTO accommodations 
             (name, description, type, capacity, rooms, price, features, images, available, owner_id, city_id, 
              address, latitude, longitude, amenity_ids, package_name, package_description, package_images,
-             adult_price, child_price, max_guests, MaxPersonVilla, RatePerPerson) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             adult_price, child_price, max_guests, MaxPersonVilla, RatePerPerson, website) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 name,
                 description || null,
@@ -440,7 +444,8 @@ routes.post('/accommodations', async (req, res) => {
                 childPrice,
                 maxGuests,
                 MaxPersonVilla || null,
-                RatePersonVilla || null
+                RatePersonVilla || null,
+                website || null
             ]
         );
 
@@ -493,7 +498,7 @@ routes.put('/accommodations/:id', async (req, res) => {
         const current = existingRows[0];
 
         // --- 3. Merge Request Body with Current Data ---
-        
+
         // Destructure request body, matching the POST route's structure
         const {
             basicInfo = {},
@@ -512,7 +517,8 @@ routes.put('/accommodations/:id', async (req, res) => {
         const price = basicInfo.price ?? current.price;
         const MaxPersonVilla = basicInfo.MaxPersonVilla ?? current.MaxPersonVilla;
         // Handle the column name mismatch from your POST route
-        const RatePerPerson = basicInfo.RatePersonVilla ?? current.RatePerPerson; 
+        const RatePerPerson = basicInfo.RatePersonVilla ?? current.RatePerPerson;
+        const website = basicInfo.website ?? current.website;
 
         // Merge location
         const address = location.address ?? current.address;
@@ -540,7 +546,7 @@ routes.put('/accommodations/:id', async (req, res) => {
             finalAvailable = false;
         } else {
             // If not explicitly true/false, use the current value
-            finalAvailable = current.available; 
+            finalAvailable = current.available;
         }
 
         // Handle JSON fields: Only stringify if a *new* value is provided.
@@ -552,7 +558,7 @@ routes.put('/accommodations/:id', async (req, res) => {
 
         // --- 5. Final Validation on Merged Data ---
         if (!name || !type) {
-             throw new Error('Missing required fields: name and type');
+            throw new Error('Missing required fields: name and type');
         }
         if (Number(capacity) <= 0 || Number(rooms) <= 0 || Number(price) <= 0) {
             throw new Error('Capacity, rooms, and price must be positive numbers');
@@ -566,7 +572,7 @@ routes.put('/accommodations/:id', async (req, res) => {
                 city_id = ?, address = ?, latitude = ?, longitude = ?, amenity_ids = ?,
                 package_name = ?, package_description = ?, package_images = ?,
                 adult_price = ?, child_price = ?, max_guests = ?,
-                MaxPersonVilla = ?, RatePerPerson = ?,
+                MaxPersonVilla = ?, RatePerPerson = ?, website = ?,
                 updated_at = CURRENT_TIMESTAMP()
             WHERE id = ?`,
             [
@@ -575,19 +581,19 @@ routes.put('/accommodations/:id', async (req, res) => {
                 cityId, address, latitude, longitude, finalAmenityIds,
                 packageName, packageDescription, finalPackageImages,
                 Number(adultPrice), Number(childPrice), Number(maxGuests),
-                MaxPersonVilla, RatePerPerson,
+                MaxPersonVilla, RatePerPerson, website,
                 id
             ]
         );
-        
+
         // Check if any rows were actually changed
         if (result.changedRows === 0) {
-             await connection.commit();
-             await closeConnection(connection);
-             return res.status(200).json({
-                 id: id,
-                 message: 'No changes detected. Accommodation not updated.'
-             });
+            await connection.commit();
+            await closeConnection(connection);
+            return res.status(200).json({
+                id: id,
+                message: 'No changes detected. Accommodation not updated.'
+            });
         }
 
         await connection.commit();
@@ -610,15 +616,15 @@ routes.put('/accommodations/:id', async (req, res) => {
         }
 
         console.error('Error updating accommodation:', error);
-        
+
         // Handle validation errors gracefully
-        if (error.message.includes('Missing required') || 
+        if (error.message.includes('Missing required') ||
             error.message.includes('must be positive')) {
             return res.status(400).json({ error: error.message });
         }
 
         // Generic server error
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Failed to update accommodation',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
@@ -696,7 +702,7 @@ routes.delete('/accommodations/:id', async (req, res) => {
         // More specific error handling
         let errorMessage = 'Failed to delete accommodation';
         let errorDetails = {};
-        
+
         if (error.code === 'ER_ROW_IS_REFERENCED_2') {
             errorMessage = 'Cannot delete - accommodation is referenced by other records';
             errorDetails = { hint: 'Please delete related bookings or reviews first' };

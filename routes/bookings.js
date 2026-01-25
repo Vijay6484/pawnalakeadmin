@@ -18,17 +18,17 @@ const { v4: uuidv4 } = require("uuid");
 
 require("dotenv").config();
 
-const payu_key = process.env.PAYU_MERCHANT_KEY ||"rFrruE9E"; //process.env.PAYU_MERCHANT_KEY;
+const payu_key = process.env.PAYU_MERCHANT_KEY || "rFrruE9E"; //process.env.PAYU_MERCHANT_KEY;
 
-const payu_salt = process.env.PAYU_MERCHANT_SALT||"DvYeVsKfYU";
+const payu_salt = process.env.PAYU_MERCHANT_SALT || "DvYeVsKfYU";
 
 // "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCS2TYPoivPA9qOZW+c+evpYJGF9I6Ti/FVL3+3AyEImmWr9kd8NXRnWkRw79JmzJ+wUL1HkuloTCEvOcnoN16sd2bQ3n4j2WRca0QkHbx4JougH3NKfUkVIo2n21xlaxu9xiIjMZF1OQbNhMJfid/vP7FSaUhLdN46aWvyjxohK30IRvGnXbOH3666UtJXDSvebtrClLfUdX/9zOXLUU45vncGyCtylNiADLW5dMR5EkB8vQwpFXbQ+79LG9RRSDD8yCIJbd8Z4EB5gt1rQwdiUeV2T45ncSETFNKudUtwt/SxffzQPH5qDiyU2D35Cc5lUQQmELjK9aLYI/ge6ss1AgMBAAECggEAFxolc2GttzBxxIeoPr+hsdIvqq2N9Z/lPGPP2ZScMIyLtLk2x09oi+7rSAIurV4BPF2DXZx67F3XtaSHg2kck5DoQ7FREmY7r/9vFah480ULH8p62ovpwLGyK+dqeokWcO1YBwXgDptFWvVJF/sql+rDBIZMKZTN9k4J/buuHmwKQEqOowUBQWP1oo0Sgrnv48nQqlPfGatxq7U4w4hRLf3l6UR0c/mPHVb00UabBaZzZ9B/jMMasHDtLKYQ/69VtCo2QVm9Kykh3bRHKjiAF5f606gHiewILi3jj+lcnUrcDL1pFkBqskrJ8NibHfdJkaT1w3W1n463cLfCCntD2QKBgQC67h1lGo3avoB4GdoGMzqsDg9Bub0FpI2/lnL5oeFgygRvYRBb78E3fUKuYIWcUjiZaTgukIsMtZKPEpv90tJXua5dQEOOip9D4SQddHoT7MNToFFKJ5pXzHonc8dSMQYLV3LeR1V/9inJhrRPjedhr1jdJBMLZIAOe/mZBDh8CQKBgQDJG7zPL0sua6WkX6lLX0JydmEjbOFedeL2olY3pm8Vj0iC1ejUzsYrRwHEc1YUr2bO0NQ0uQ64dLhl+AXu2HwCWu7aRKMas0lg4uFemcmerqUMd1ozJJfI3fhjfSaFXwSqn5LcclUCXt/LOx49cxN9HmPHYNpyvV+P17gchIG4zQKBgCL95+rBKcTE3G+fBz0Z4eXLS/fVuRiRUSeIFkW8k9/2cRYYaWOMYfLtM8pIrzov+gBdvfKZhC4A30qBBUpiaJWbYJR8LylDscSXJJeO8jtAmt/QpubmuvGsiUFRXwJ3wtXkrNAHMm4dunzLBn3N5n5WwJ/E3PvI+F+9vV9zds9hAoGAdz5eHo8RSe4EIkmibRGHqaztff7SRpspv0mUS50A4sy5lvJVAtG0CPcqYhxtHwi9scV6/eP4iYCT0cpVYkC0jwTx+TOXbn599Nex/9C6Dr/JF3IxZn+9DBopbHxJee1ULANAJjwYkbZFhhCAprj0Bk0dppuUC1KkNfsXrLkY3cUCgYAYdRxY9KFg97jhRyD25LKTHbLyp5+rd53UxxNM5GGaxwHCe0FPj9jTD9x6NoGIg1cLDeaTIy20a4cDJx5v50yrMFvnbIMCcQ4nm71GfXUtO53O/k4ptTk9jVlM8ymJ/kK0956OODrrCTz/4Sur4+11gkd1LAw+MfKHZ8gtWrswPQ=="; //process.env.PAYU_MERCHANT_SALT;
 
-const PAYU_BASE_URL =process.env.PAYU_BASE_URL ||'https://secure.payu.in';
+const PAYU_BASE_URL = process.env.PAYU_BASE_URL || 'https://secure.payu.in';
 
-const FRONTEND_BASE_URL =process.env.FRONTEND_BASE_URL || "https://plumeriaretreat.vercel.app";
+const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || "https://plumeriaretreat.vercel.app";
 
-const ADMIN_BASE_URL =process.env.ADMIN_BASE_URL || "https://a.plumeriaretreat.com";
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://a.plumeriaretreat.com";
 
 // BOOKING CLEANUP JOB
 
@@ -102,6 +102,7 @@ router.get("/", async (req, res) => {
         b.payment_status,
 
         b.payment_txn_id,
+        b.website,
 
         b.created_at
 
@@ -187,6 +188,7 @@ router.post("/", async (req, res) => {
       ExtraPersonVilla,
       type,
       payment_method = "payu",
+      website,
     } = req.body;
 
     console.log(req.body);
@@ -257,37 +259,38 @@ router.post("/", async (req, res) => {
     const payment_txn_id = `BOOK-${uuidv4()}`;
 
     const [result] = await connection.execute(
-  `INSERT INTO bookings (
+      `INSERT INTO bookings (
     guest_name, guest_email, guest_phone, accommodation_id, package_id,
     check_in, check_out, adults, children, rooms, food_veg, food_nonveg, 
     food_jain, total_amount, advance_amount, payment_status, payment_txn_id, 
-    coupon_code, discount_amount, full_amount, created_at
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-  [
-    guest_name,
-    guest_email,
-    guest_phone || null,
-    accommodation_id,
-    package_id,
-    check_in,
-    check_out,
-    adults,
-    children,
-    rooms,
-    food_veg,
-    food_nonveg,
-    food_jain,
-    total_amount,
-    advance_amount,
-    payment_status,
-    payment_txn_id,
-    // Coupon and discount fields (matching AccommodationBookingPage pattern)
-    coupon_code || null,        
-    discount || 0,
-    full_amount || null,
-    new Date(),
-  ]
-);
+    coupon_code, discount_amount, full_amount, website, created_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        guest_name,
+        guest_email,
+        guest_phone || null,
+        accommodation_id,
+        package_id,
+        check_in,
+        check_out,
+        adults,
+        children,
+        rooms,
+        food_veg,
+        food_nonveg,
+        food_jain,
+        total_amount,
+        advance_amount,
+        payment_status,
+        payment_txn_id,
+        // Coupon and discount fields (matching AccommodationBookingPage pattern)
+        coupon_code || null,
+        discount || 0,
+        full_amount || null,
+        website || null,
+        new Date(),
+      ]
+    );
 
     await connection.commit();
 
@@ -350,14 +353,15 @@ router.post("/offline", async (req, res) => {
 
       total_amount,
       advance_amount = 0,
-      coupon,         
-      discount,       
+      coupon,
+      discount,
       full_amount,
       extra_adults = 0,
-      isvilla  
+      isvilla,
+      website
     } = req.body;
 
-    
+
     // Validate required fields
     const requiredFields = [
       "guest_name",
@@ -513,8 +517,8 @@ router.post("/offline", async (req, res) => {
         `INSERT INTO bookings (
           guest_name, guest_email, guest_phone, accommodation_id,
           check_in, check_out, adults, children, rooms, food_veg, food_nonveg,
-          food_jain, total_amount, advance_amount, payment_status, payment_txn_id, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          food_jain, total_amount, advance_amount, payment_status, payment_txn_id, website, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           guest_name,
           guest_email,
@@ -532,12 +536,13 @@ router.post("/offline", async (req, res) => {
           advanceAmountNum,
           payment_status,
           payment_txn_id,
+          website || null,
           new Date(),
         ]
       );
     } catch (insertError) {
       await connection.rollback();
-      
+
       // Handle specific database errors
       if (insertError.code === "ER_NO_REFERENCED_ROW_2") {
         return res.status(400).json({
@@ -559,7 +564,7 @@ router.post("/offline", async (req, res) => {
           code: "DUPLICATE_ENTRY"
         });
       }
-      
+
       console.error("Error inserting booking:", insertError);
       throw insertError; // Re-throw to be caught by outer catch
     }
@@ -624,7 +629,7 @@ router.post("/offline", async (req, res) => {
           ownerEmail = user.email || "babukale60@gmail.com";
           ownerName = user.name || "babu kale";
           ownerPhone = user.phoneNumber || "8237346608";
-        } 
+        }
 
       } catch (ownerError) {
         // Log but don't fail the booking if owner fetch fails
@@ -666,47 +671,47 @@ router.post("/offline", async (req, res) => {
 
     try {
       await sendPdfEmail({
-      email: booking.guest_email,
-      name: booking.guest_name,
-      BookingId: booking.id,
-      BookingDate: formatDate(booking.created_at),
-      CheckinDate: formatDate(booking.check_in),
-      CheckoutDate: formatDate(booking.check_out),
-      totalPrice: booking.total_amount,
-      advancePayable: booking.advance_amount,
-      remainingAmount: remainingAmount.toFixed(2),
+        email: booking.guest_email,
+        name: booking.guest_name,
+        BookingId: booking.id,
+        BookingDate: formatDate(booking.created_at),
+        CheckinDate: formatDate(booking.check_in),
+        CheckoutDate: formatDate(booking.check_out),
+        totalPrice: booking.total_amount,
+        advancePayable: booking.advance_amount,
+        remainingAmount: remainingAmount.toFixed(2),
 
-      mobile: booking.guest_phone,
+        mobile: booking.guest_phone,
 
-      totalPerson: booking.adults + booking.children,
+        totalPerson: booking.adults + booking.children,
 
-      adult: booking.adults,
+        adult: booking.adults,
 
-      child: booking.children,
+        child: booking.children,
 
-      vegCount: booking.food_veg,
+        vegCount: booking.food_veg,
 
-      nonvegCount: booking.food_nonveg,
+        nonvegCount: booking.food_nonveg,
 
-      joinCount: booking.food_jain,
+        joinCount: booking.food_jain,
 
-      accommodationName: booking.accommodation_name || "",
+        accommodationName: booking.accommodation_name || "",
 
-      accommodationAddress: booking.accommodation_address || "",
+        accommodationAddress: booking.accommodation_address || "",
 
-      latitude: booking.latitude || "",
+        latitude: booking.latitude || "",
 
-      longitude: booking.longitude || "",
+        longitude: booking.longitude || "",
 
-      ownerEmail: ownerEmail || "",
-      ownerName: ownerName || "",
-      ownerPhone: ownerPhone || "",
-      rooms : booking.rooms || "",
-      coupon: coupon || "",
-      discount: discount || "",
-      full_amount: full_amount || "",
-      acc_type: isvilla ? "villa" : "resort"
-    });
+        ownerEmail: ownerEmail || "",
+        ownerName: ownerName || "",
+        ownerPhone: ownerPhone || "",
+        rooms: booking.rooms || "",
+        coupon: coupon || "",
+        discount: discount || "",
+        full_amount: full_amount || "",
+        acc_type: isvilla ? "villa" : "resort"
+      });
     } catch (emailError) {
       // Log email error but don't fail the response
       console.error("Error sending confirmation email:", emailError);
@@ -744,7 +749,7 @@ router.post("/offline", async (req, res) => {
       if (error.code.startsWith("ER_")) {
         statusCode = 400;
         errorCode = "DATABASE_ERROR";
-        
+
         if (error.code === "ER_ROW_IS_REFERENCED_2") {
           errorMessage = "Cannot create booking - accommodation is referenced incorrectly";
         } else if (error.code === "ER_BAD_FIELD_ERROR") {
@@ -812,10 +817,10 @@ router.delete('/delete/:id', async (req, res) => {
       success: true,
       message: 'Booking deleted successfully',
     });
-  } catch (error){
+  } catch (error) {
     await connection.rollback();
     console.error("❌ Error creating booking:", error.sqlMessage || error.message);
-  
+
     res.status(500).json({
       success: false,
       error: "Failed to create booking",
@@ -1178,10 +1183,10 @@ async function sendPdfEmail(params) {
     ownerEmail,
     ownerName,
     ownerPhone,
-	  coupon,
-	  discount,
-	  full_amount,
-	  rooms,
+    coupon,
+    discount,
+    full_amount,
+    rooms,
     acc_type
   } = params;
 
@@ -3454,26 +3459,26 @@ async function sendPdfEmail(params) {
     port: 587,
 
     auth: {
-      user: process.env.EMAIL_USER ,
+      user: process.env.EMAIL_USER,
 
       pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from:process.env.EMAIL_USER,
+    from: process.env.EMAIL_USER,
     to: email.trim(),
-	cc: ownerEmail,
-	bcc: "admin@campatpawna.com",
+    cc: ownerEmail,
+    bcc: "admin@campatpawna.com",
     subject: "Resort Camping Booking",
 
     html: html, // Make sure HTML variable is defined
   };
-  const mailOptions_villa= {
-    from:process.env.EMAIL_USER,
+  const mailOptions_villa = {
+    from: process.env.EMAIL_USER,
     to: email.trim(),
-	cc: ownerEmail,
-	bcc: "admin@campatpawna.com",
+    cc: ownerEmail,
+    bcc: "admin@campatpawna.com",
     subject: "Resort Camping Booking",
 
     html: html_villa, // Make sure HTML variable is defined
@@ -3481,9 +3486,9 @@ async function sendPdfEmail(params) {
 
   try {
     if (acc_type === 'villa') {
-      const info  = await transporter.sendMail(mailOptions_villa);
-    }else{
-      const info  = await transporter.sendMail(mailOptions);
+      const info = await transporter.sendMail(mailOptions_villa);
+    } else {
+      const info = await transporter.sendMail(mailOptions);
     }
 
     console.log("✅ Email sent:", info.response);
@@ -3596,7 +3601,7 @@ router.post("/success/verify/:txnid", async (req, res) => {
       console.log("📧 Owner email:", ownerEmail);
 
       // If you want to enable email sending later, you can log like this:
-      
+
       console.log("🚀 Attempting to send confirmation email...");
       try {
         await sendPdfEmail({
