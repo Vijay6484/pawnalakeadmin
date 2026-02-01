@@ -15,7 +15,7 @@ const port = process.env.PORT || 5000;
 app.use(express.urlencoded({ extended: true }));
 // Setup logging
 const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, 'access.log'), 
+  path.join(__dirname, 'access.log'),
   { flags: 'a' }
 );
 app.use(morgan('combined', { stream: accessLogStream }));
@@ -24,13 +24,14 @@ app.use(morgan('dev')); // Log to console in development
 // Middleware
 app.use(cors({
   origin: [
-    'http://localhost:5173', 
-     'https://admin.campatpawna.com',
-     'https://www.campatpawna.com',
-     'https://www.admin.campatpawna.com',
-     'https://campatpawna.com',
-     'http://localhost:5174',
-     'https://campatpawna.com'
+    'http://localhost:5173',
+    'https://admin.campatpawna.com',
+    'https://www.campatpawna.com',
+    'https://www.admin.campatpawna.com',
+    'https://campatpawna.com',
+    'http://localhost:5174',
+    'https://campatpawna.com',
+    'https://coral-okapi-818337.hostingersite.com'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -66,11 +67,11 @@ app.use(async (req, res, next) => {
     next();
   } catch (err) {
     console.error('DB Connection Error:', err.message);
-    
+
     // Provide more specific error information
     let errorMessage = 'Database connection failed';
     let errorDetails = {};
-    
+
     if (err.code === 'ER_ACCESS_DENIED_ERROR') {
       errorMessage = 'Database authentication failed';
       errorDetails = {
@@ -88,10 +89,10 @@ app.use(async (req, res, next) => {
         hint: 'Database server is not responding'
       };
     }
-    
+
     if (conn) await conn.release().catch(e => console.error('Release error:', e));
-    
-    res.status(503).json({ 
+
+    res.status(503).json({
       error: 'Service unavailable',
       message: errorMessage,
       details: process.env.NODE_ENV === 'development' ? errorDetails : undefined
@@ -184,7 +185,7 @@ app.use((req, res) => {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Global error:', err);
-  
+
   if (err instanceof TypeError && err.message.includes('Missing parameter name')) {
     return res.status(500).json({
       error: 'Invalid route configuration',
@@ -192,7 +193,7 @@ app.use((err, req, res, next) => {
       timestamp: new Date().toISOString()
     });
   }
-  
+
   res.status(err.status || 500).json({
     error: err.message || 'Internal Server Error',
     timestamp: new Date().toISOString()
@@ -202,7 +203,7 @@ app.use((err, req, res, next) => {
 // Graceful shutdown
 const shutdown = async () => {
   console.log('\n[Shutdown] Starting graceful shutdown...');
-  
+
   try {
     await pool.end();
     console.log('[Shutdown] Database pool closed successfully');
