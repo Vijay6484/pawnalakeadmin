@@ -1187,7 +1187,8 @@ async function sendPdfEmail(params) {
     discount,
     full_amount,
     rooms,
-    acc_type
+    acc_type,
+    website
   } = params;
 
   console.log("Sending PDF email to:", email);
@@ -2330,6 +2331,7 @@ async function sendPdfEmail(params) {
 
 
 </html>`;
+
   const html_villa = `<!DOCTYPE html
 
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -3451,6 +3453,15 @@ async function sendPdfEmail(params) {
 
   // ... (rest of the HTML template remains the same) ...
 
+
+  const html_pawanai = html.replace(/Camp at Pawna/g, "PawanaI Camping")
+    .replace(/bookings@campatpawna.com/g, "bookings@pawanaicamping.com")
+    .replace(/https:\/\/campatpawna.com\/logo.png/g, "https://pawanaicamping.com/logo.png");
+
+  const html_pawanai_villa = html_villa.replace(/Camp at Pawna/g, "PawanaI Camping")
+    .replace(/bookings@campatpawna.com/g, "bookings@pawanaicamping.com")
+    .replace(/https:\/\/campatpawna.com\/logo.png/g, "https://pawanaicamping.com/logo.png");
+
   const transporter = nodemailer.createTransport({
     host: "smtp.hostinger.com",
 
@@ -3469,27 +3480,28 @@ async function sendPdfEmail(params) {
     from: process.env.EMAIL_USER,
     to: email.trim(),
     cc: ownerEmail,
-    bcc: "admin@campatpawna.com",
+    bcc: "pawnalakecamping6608@gmail.com",
     subject: "Resort Camping Booking",
 
     html: html, // Make sure HTML variable is defined
   };
-  const mailOptions_villa = {
-    from: process.env.EMAIL_USER,
-    to: email.trim(),
-    cc: ownerEmail,
-    bcc: "admin@campatpawna.com",
-    subject: "Resort Camping Booking",
 
-    html: html_villa, // Make sure HTML variable is defined
-  };
+  const isPawanai = website && (website.toLowerCase().includes("pawanai") || website.toLowerCase().includes("pavnaicamping"));
+
+  if (isPawanai) {
+    mailOptions.from = "bookings@pawanaicamping.com";
+  }
+
+  // Determine which template to use
+  if (acc_type === 'villa') {
+    mailOptions.html = isPawanai ? html_pawanai_villa : html_villa;
+  } else {
+    mailOptions.html = isPawanai ? html_pawanai : html;
+  }
 
   try {
-    if (acc_type === 'villa') {
-      const info = await transporter.sendMail(mailOptions_villa);
-    } else {
-      const info = await transporter.sendMail(mailOptions);
-    }
+    const info = await transporter.sendMail(mailOptions);
+
 
     console.log("✅ Email sent:", info.response);
 
@@ -3540,7 +3552,7 @@ router.post("/success/verify/:txnid", async (req, res) => {
     const [bookings] = await pool.execute(`
       SELECT guest_email, id, guest_name, guest_phone, rooms, adults, children, 
              food_veg, food_nonveg, food_jain, check_in, check_out, 
-             total_amount, advance_amount, accommodation_id , coupon_code ,discount_amount ,full_amount
+             total_amount, advance_amount, accommodation_id , coupon_code ,discount_amount ,full_amount, website
       FROM bookings WHERE payment_txn_id = ?`,
       [txnid]
     );
@@ -3633,7 +3645,7 @@ router.post("/success/verify/:txnid", async (req, res) => {
           full_amount: bk.full_amount || "0",
           acc_type: acc.type.toLowerCase() || 'camping',
           rooms: bk.rooms || 0,
-          acc_type: acc.type.toLowerCase() || 'camping',
+          website: bk.website || ""
         });
         console.log("✅ Confirmation email sent to:", recipientEmail);
       } catch (e) {
